@@ -10,10 +10,13 @@ jQuery.ajax({
 		operationName: "createArticle",
 		query: "mutation createArticle($title: String!, $content: String!, $parentId: ParentId!, $textContent: String!, $contactPerson: ProfileId) {\n  createdArticle: createArticle(\n    article: {title: $title, content: $content, textContent: $textContent, parentId: $parentId, contactPerson: $contactPerson}\n  ) {\n    id\n    title\n    content\n    __typename\n  }\n}\n",
 		variables: {
-			title: "ja test titel",
-			parentId: "WIKI_WIKI,20ba5faf-dfdc-43aa-a255-495c212759a0",
-			content: "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Hallo Welt!\"}]},{\"type\":\"paragraph\"},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Ich bin \"},{\"type\":\"text\",\"marks\":[{\"type\":\"strong\"}],\"text\":\"FETT\"},{\"type\":\"text\",\"text\":\" geschrieben!\"}]}]}",
-			textContent: "Hallo Welt!\nIch bin FETT geschrieben!",
+			title: "test",
+			parentId: "WIKI_CHAPTER,7b0d0a7e-2a32-4417-99cb-076884f017db",
+			content: JSON.stringify({
+				"type":"html",
+				"content": "<p>asdf</p>"
+			}),
+			textContent: "test",
 			contactPerson: "PROFILE,4",
 		},
 	}),

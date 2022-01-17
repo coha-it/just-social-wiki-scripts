@@ -12,7 +12,16 @@ jQuery.ajax({
 		variables: {
 			title: "test",
 			parentId: "WIKI_CHAPTER,7b0d0a7e-2a32-4417-99cb-076884f017db",
-			content: "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}]}",
+			content: JSON.stringify({
+				"type":"doc",
+				"content":[{
+					"type":"paragraph",
+					"content":[{
+						"type":"text",
+						"text":"Hallo Welt <p>asdf</p>"
+					}]
+				}]
+			}),
 			textContent: "test",
 			contactPerson: "PROFILE,4",
 		},
