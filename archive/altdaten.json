@@ -1,0 +1,47 @@
+{
+  "type": "doc",
+  "content": [{
+    "type": "paragraph",
+    "content": [{
+      "type": "text",
+      "text": "asdfsadf asdf asd"
+    }]
+  }, {
+    "type": "paragraph",
+    "content": [{
+      "type": "text",
+      "text": "fsaddfsadfs"
+    }, {
+      "type": "hard_break"
+    }, {
+      "type": "text",
+      "text": "adsfdsffads"
+    }]
+  }, {
+    "type": "paragraph",
+    "content": [{
+      "type": "text",
+      "marks": [{
+        "type": "em"
+      }, {
+        "type": "strong"
+      }],
+      "text": "HALLO WELT+"
+    }]
+  }, {
+    "type": "paragraph",
+    "content": [{
+      "type": "text",
+      "marks": [{
+        "type": "underline"
+      }],
+      "text": "Unterstrichen!"
+    }]
+  }, {
+    "type": "paragraph",
+    "content": [{
+      "type": "text",
+      "text": "f ads fafsd sad fa sdf"
+    }]
+  }]
+}
