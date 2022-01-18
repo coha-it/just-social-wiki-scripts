@@ -1,0 +1,168 @@
+{
+  "operationName": "updateArticle",
+  "variables": {
+    "id": "WIKI_ARTICLE,c0dd4a3c-2501-4ef1-97f0-5b7132809bfd",
+    "title": "0.1.1 Aufbau Ausbildungsprogramm",
+    "parentId": "WIKI_CHAPTER,408f71dc-1944-42d8-8780-6df2ea091365",
+    "content": {
+      "type": "doc",
+      "content": [{
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "text": "Ein kleiner Test!"
+        }]
+      }, {
+        "type": "heading",
+        "attrs": {
+          "level": 1
+        },
+        "content": [{
+          "type": "text",
+          "text": "ich bin h1"
+        }]
+      }, {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [{
+          "type": "text",
+          "text": "ich bin h2"
+        }]
+      }, {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [{
+          "type": "text",
+          "text": "ich bin h3"
+        }]
+      }, {
+        "type": "code_block",
+        "content": [{
+          "type": "text",
+          "text": "ich bin ein codeschnipsel"
+        }]
+      }, {
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "marks": [{
+            "type": "strong"
+          }],
+          "text": "Ich bin dick"
+        }]
+      }, {
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "marks": [{
+            "type": "em"
+          }],
+          "text": "ich bin kursiv"
+        }]
+      }, {
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "marks": [{
+            "type": "underline"
+          }],
+          "text": "ich bin unterstrichen"
+        }]
+      }, {
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "marks": [{
+            "type": "strikethrough"
+          }],
+          "text": "ich bin durchgestrichen"
+        }]
+      }, {
+        "type": "bullet_list",
+        "content": [{
+          "type": "list_item",
+          "content": [{
+            "type": "paragraph",
+            "content": [{
+              "type": "text",
+              "text": "ich bin eine liste"
+            }]
+          }]
+        }, {
+          "type": "list_item",
+          "content": [{
+            "type": "paragraph",
+            "content": [{
+              "type": "text",
+              "text": "punkt zwei der liste"
+            }]
+          }]
+        }]
+      }, {
+        "type": "ordered_list",
+        "attrs": {
+          "order": 1
+        },
+        "content": [{
+          "type": "list_item",
+          "content": [{
+            "type": "paragraph",
+            "content": [{
+              "type": "text",
+              "text": "Ich bin nummerierte liste"
+            }]
+          }]
+        }, {
+          "type": "list_item",
+          "content": [{
+            "type": "paragraph",
+            "content": [{
+              "type": "text",
+              "text": "Ich bin punkt zwei der nummerierten liste"
+            }]
+          }]
+        }, {
+          "type": "list_item",
+          "content": [{
+            "type": "paragraph",
+            "content": [{
+              "type": "text",
+              "text": "punkt 3 der listne"
+            }]
+          }]
+        }]
+      }, {
+        "type": "paragraph",
+        "content": [{
+          "type": "text",
+          "marks": [{
+            "type": "link",
+            "attrs": {
+              "href": "https://www.google.de/",
+              "title": "ich bin ein link zu google"
+            }
+          }],
+          "text": "ich bin ein link zu google"
+        }]
+      }, {
+        "type": "infobox",
+        "content": [{
+          "type": "paragraph",
+          "content": [{
+            "type": "text",
+            "text": "Ich bin eine Infobox!"
+          }]
+        }]
+      }, {
+        "type": "paragraph"
+      }]
+    },
+    "textContent": "Ein kleiner Test!\nich bin h1\nich bin h2\nich bin h3\nich bin ein codeschnipsel\nIch bin dick\nich bin kursiv\nich bin unterstrichen\nich bin durchgestrichen\nich bin eine liste\npunkt zwei der liste\nIch bin nummerierte liste\nIch bin punkt zwei der nummerierten liste\npunkt 3 der listne\nich bin ein link zu google\nIch bin eine Infobox!\n",
+    "contactPerson": "PROFILE,1"
+  },
+  "query": "mutation updateArticle($id: ArticleId!, $title: String, $content: String, $parentId: ParentId, $textContent: String, $contactPerson: ProfileId) {\n  updatedArticle: updateArticle(\n    id: $id\n    article: {title: $title, content: $content, textContent: $textContent, parentId: $parentId, contactPerson: $contactPerson}\n  ) {\n    id\n    title\n    content\n    parentId\n    articleVersionId\n    __typename\n  }\n}\n"
+}
