@@ -16,7 +16,8 @@ coha.httpConvertHtmlToProseMirror = async article => {
   coha.log('HTTP HTML TO PROSE', article)
   try {
     return await jQuery.ajax({
-      url: 'https://prosemirror-converter.tools.corporate-happiness.de',
+      // url: 'https://prosemirror-converter.tools.corporate-happiness.de/',
+      url: 'http://localhost:8000/',
       type: 'GET',
       data: {
         data: article.html
