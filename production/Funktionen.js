@@ -71,6 +71,7 @@ coha.run = async () => {
       article.data = await coha.httpConvertHtmlToProseMirror(article)
       await coha.httpCreateArticle(article)
     }
+    coha.log(` ===> SUCCESS <=== created all ${articles?.length} articles`)
     articles = [];
   } else {
     coha.error('Please define the variable "article = [...]" first.')
