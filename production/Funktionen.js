@@ -33,7 +33,7 @@ coha.httpConvertHtmlToProseMirror = async article => {
 coha.httpCreateArticle = async article => {  
   coha.log('HTTP CREATE ARTICLE', article)
   try {
-    const isArticle = article.type === 'article'
+    const isArticle = article.type !== 'chapter'
     return await jQuery.ajax({
       url: '/wiki/graphql',
       type: 'POST',
@@ -55,7 +55,7 @@ coha.httpCreateArticle = async article => {
           content: JSON.stringify(article.data),
           // content: "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"marks\":[{\"type\":\"strong\"}],\"text\":\"atseatse\"}]}]}",
           textContent: "test",
-          contactPerson: "PROFILE,4",
+          contactPerson: "PROFILE,1",
         },
       }),
     });
