@@ -3,6 +3,7 @@
 var coha = {}
 
 coha.log = console.log
+coha.error = console.error
 
 coha.getActiveChapterTitle = () => {
   // Get 
@@ -20,7 +21,7 @@ coha.httpConvertHtmlToProseMirror = async article => {
       url: 'http://localhost:8000/',
       type: 'GET',
       data: {
-        data: article.html
+        data: article.post_content
       }
     });
   } catch(err) {
@@ -70,6 +71,9 @@ coha.run = async () => {
       article.data = await coha.httpConvertHtmlToProseMirror(article)
       await coha.httpCreateArticle(article)
     }
+    articles = [];
+  } else {
+    coha.error('Please define the variable "article = [...]" first.')
   }
 }
 
