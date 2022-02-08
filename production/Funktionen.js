@@ -31,7 +31,12 @@ coha.httpUploadImages = async article => {
 
   try {
     // Get all Source-Links
-    var imgUrls = article?.post_content?.match(/<img [^>]*src=["'][^"]*["'][^>]*>/gm).map(x => x.replace(/.*src=["']([^"]*)["'].*/, '$1'))
+    var imgUrls = article?.post_content?.match(/<img [^>]*src=["'][^"]*["'][^>]*>/gm)?.map(x => x.replace(/.*src=["']([^"]*)["'].*/, '$1'))
+
+    if(!imgUrls) {
+      console.log('No images found on article: ', article)
+      return article
+    }
 
     // Download all Source-Links
     // imgUrls.forEach(imgUrl => {
