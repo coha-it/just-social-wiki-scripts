@@ -5,6 +5,13 @@ var coha = {}
 coha.log = console.log
 coha.error = console.error
 
+coha.jQueryHeaders = {
+  'just-tenant-id': just?.context?.config?.tenantId,
+  'just-token': just?.auth?.token,
+}
+
+coha.escapeRegExp = string => new RegExp(string.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&')) // $& means the whole matched string
+
 coha.getActiveChapterTitle = () => {
   // Get 
   const activeChapter = jQuery('.inUXkH.active')?.attr('href');
@@ -13,21 +20,75 @@ coha.getActiveChapterTitle = () => {
   return (activeChapter ?? activeWiki)?.split("/")?.pop()
 }
 
+coha.asyncForEach = async function(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
+coha.httpUploadImages = async article => {
+  coha.log('DOWNLOAD AND UPLOAD IMAGES', article)
+
+  try {
+    // Get all Source-Links
+    var imgUrls = article?.post_content?.match(/<img [^>]*src=["'][^"]*["'][^>]*>/gm).map(x => x.replace(/.*src=["']([^"]*)["'].*/, '$1'))
+
+    // Download all Source-Links
+    // imgUrls.forEach(imgUrl => {
+    await coha.asyncForEach(imgUrls, async (imgUrl) => {
+      // Download Image | For example 'https://happiness-edutainment.de/medien/35.jpg'
+      const img = await fetch(imgUrl).then(r => r.blob());
+
+      // Upload Image
+      let fd = new FormData();
+      fd.append('files', img);
+
+      // Call the API
+      const driveUrls = await jQuery.ajax({
+        url: '/drive/api/tmp/upload',
+        type: 'POST',
+        headers: coha.jQueryHeaders,
+        data: fd,
+        processData: false,
+        contentType: false,
+      });
+
+      // Get the Drive URL
+      const driveUrl = driveUrls[0]
+
+      // Add to SRC the drive-id
+      // article.post_content = article.post_content.replaceAll(/(<img [^>]*src=["'][^"]*["'])([^>]*>)/gm, '$1 drive-id="" $2')
+      article.post_content = article.post_content?.replaceAll(new RegExp(`(<img [^>]*src=["']${imgUrl}["'])([^>]*>)`, "gm"), '$1 drive-id="' + driveUrl + '" $2')
+
+      console.log('the driveUrl is: ', driveUrl , 'and the imgUrl is', imgUrl)
+    });
+
+    console.log(article)
+
+    return article
+
+  } catch (error) {
+    console.error('Error on httpUploadImages: ', error)
+    return article
+  }
+}
+
 coha.httpConvertHtmlToProseMirror = async article => {
   coha.log('HTTP HTML TO PROSE', article)
   try {
-    return await jQuery.ajax({
-      // url: 'https://prosemirror-converter.tools.corporate-happiness.de/',
-      url: 'http://localhost:8000/',
+    article.data = await jQuery.ajax({
+      url: 'https://prosemirror-converter.tools.corporate-happiness.de/',
+      // url: 'http://localhost:8000/',
       type: 'GET',
       data: {
         data: article.post_content
       }
     });
-  } catch(err) {
-    return {}
+    return article
+  } catch(error) {
+    console.error('Error on httpConvertHtmlToProseMirror: ', error)
+    return article
   }
-
 }
 
 coha.httpCreateArticle = async article => {  
@@ -37,10 +98,7 @@ coha.httpCreateArticle = async article => {
     return await jQuery.ajax({
       url: '/wiki/graphql',
       type: 'POST',
-      headers: {
-        'just-tenant-id': just?.context?.config?.tenantId,
-        'just-token': just?.auth?.token,
-      },
+      headers: coha.jQueryHeaders,
       contentType: "application/json",
       // data: article.data
       data: JSON.stringify({
@@ -59,7 +117,28 @@ coha.httpCreateArticle = async article => {
         },
       }),
     });
-  } catch(err) {
+  } catch(error) {
+    return {}
+  }
+}
+
+coha.httpDeleteArticleOrChapter = async id => {  
+  try {
+    return await jQuery.ajax({
+      url: '/wiki/graphql',
+      type: 'POST',
+      headers: coha.jQueryHeaders,
+      contentType: "application/json",
+      // data: article.data
+      data: JSON.stringify({
+        operationName: 'deleteArticle',
+        query: "mutation deleteArticle($id: ArticleId!) {\n  deletedArticle: deleteArticle(id: $id) {\n    id\n    title\n    content\n    parentId\n    __typename\n  }\n}\n",
+        variables: {
+          id,
+        },
+      }),
+    });
+  } catch(error) {
     return {}
   }
 }
@@ -68,8 +147,14 @@ coha.run = async () => {
   if(typeof articles !== 'undefined') {
     for(i in articles) {
       let article = articles[i]
-      article.data = await coha.httpConvertHtmlToProseMirror(article)
-      await coha.httpCreateArticle(article)
+      article = await coha.httpUploadImages(article)
+      article = await coha.httpConvertHtmlToProseMirror(article)
+
+      if(article.data) {
+        await coha.httpCreateArticle(article)
+      } else {
+        console.error('Error! no article.data found! ', article, article?.data)
+      }
     }
     coha.log(` ===> SUCCESS <=== created all ${articles?.length} articles`)
     articles = [];
