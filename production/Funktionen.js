@@ -5,6 +5,8 @@ var coha = {}
 coha.log = console.log
 coha.error = console.error
 
+coha.managerId = "PROFILE,1"
+
 coha.jQueryHeaders = {
   'just-tenant-id': just?.context?.config?.tenantId,
   'just-token': just?.auth?.token,
@@ -118,7 +120,7 @@ coha.httpCreateArticle = async article => {
           content: JSON.stringify(article.data),
           // content: "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"marks\":[{\"type\":\"strong\"}],\"text\":\"atseatse\"}]}]}",
           textContent: "test",
-          contactPerson: "PROFILE,1",
+          contactPerson: coha.managerId,
         },
       }),
     });
@@ -145,6 +147,39 @@ coha.httpDeleteArticleOrChapter = async id => {
     });
   } catch(error) {
     return {}
+  }
+}
+
+coha.createWikis = async () => {
+  if(typeof wikis !== 'undefined') {
+    console.log('CREATE WIKIS ...')
+    await coha.asyncForEach(wikis, async (wiki) => {
+      console.log(`CREATE WIKI: "${wiki.title}"`, wiki)
+      await jQuery.ajax({
+        url: '/wiki/graphql',
+        type: 'POST',
+        headers: coha.jQueryHeaders,
+        contentType: "application/json",
+        // data: article.data
+        data: JSON.stringify({
+          operationName: 'createWiki',
+          query: "mutation createWiki($title: String!, $description: String!, $permissions: [SetPermissionItem!]!, $contactPerson: ProfileId) {\n  createdWiki: createWiki(\n    wiki: {title: $title, description: $description, permissions: $permissions, contactPerson: $contactPerson}\n  ) {\n    id\n    title\n    description\n    __typename\n  }\n}\n",
+          variables: {
+            title: wiki.title,
+            description: wiki.description,
+            contactPerson: coha.managerId,
+            permissions: [{
+              type: "MANAGER",
+              granteeId: coha.managerId
+            }]
+          },
+        }),
+      });
+      console.log(' ... Success creating wiki')
+    })
+  }
+  else {
+    coha.error('Please define the variable "wikis = [...]" first.')
   }
 }
 
